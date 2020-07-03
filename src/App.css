@@ -106,7 +106,7 @@ text-align: center;
   width: 48%;
   padding: 3px;
   margin: 1%;
-  height: 200px;
+  height: 300px;
   overflow: auto;
 }
 .button:disabled  {

@@ -13,7 +13,8 @@ function validate (title,desc){
   
 class App extends Component {  
   constructor(props) {  
-    super(props);  
+    super(props); 
+    this.listRef = React.createRef()   // Create a ref object 
     this.state = {  
       id: 0,  
       title: "",  
@@ -26,7 +27,7 @@ class App extends Component {
       }
     };  
   }  
-  
+
   static propTypes = {  
     articles: PropTypes.array.isRequired,  
     getActricle: PropTypes.func.isRequired,  
@@ -35,8 +36,11 @@ class App extends Component {
    };  
   
   componentDidMount() {  
-    this.props.getActricle();  
+    this.props.getActricle(); 
+   // this.scrollToBottom();
+ 
     }  
+   
     canBeSubmitted() {
       const errors = validate(this.state.title, this.state.desc);
       const isDisabled = Object.keys(errors).some(x => errors[x]);
@@ -55,7 +59,8 @@ class App extends Component {
       };  
   
       this.props.addArticle(newArticle);  
-  
+      this.listRef.current.scrollIntoView(false);
+
       this.clearData();  
   }  
 }
@@ -95,7 +100,7 @@ class App extends Component {
   
   render() {  
     const applyFilter = searchTerm => article =>
-         article.title.toLowerCase().includes(searchTerm.toLowerCase());
+         article.title.toLowerCase().includes(searchTerm.toLowerCase()) || article.desc.toLowerCase().includes(searchTerm.toLowerCase());
 
     const errors = validate(this.state.title, this.state.desc);
     const isDisabled = Object.keys(errors).some(x => errors[x]);
@@ -110,7 +115,7 @@ class App extends Component {
      return (  
       <div className="App">  
         <header className="App-header">  
-               <input type="text" placeholder="Enter item to be searched"  onChange={(e)=>this.searchTitle(e)} />
+               <input type="search" placeholder="Enter item to be searched"  onChange={(e)=>this.searchTitle(e)} />
         </header>  
         <article className="App-intro container">  
           
@@ -127,17 +132,19 @@ class App extends Component {
            <button onClick={this.submitData} disabled={isDisabled} className="button"><span>PUBLISH</span></button>
             <button onClick={this.clearData} className="button"><span>CLEAR</span></button>  
           </div>  
-          <div className="rightsection">  
+          <div className="rightsection" >  
                 {this.props.articles.filter(applyFilter(this.state.search)) && this.props.articles.filter(applyFilter(this.state.search)).map((data, index) => {  
-                  return <ul  className="data-list">  
+                  return <ul  className="data-list" ref={this.listRef}
+                  >  
             <li key={data.id} className={"block-" + data.id}>
               <div>{data.title}</div>
               <div>{data.desc}</div>
             </li>
         
-            </ul>  
+            </ul> 
+            
                 })}  
-           
+                   
           </div> 
 
           
